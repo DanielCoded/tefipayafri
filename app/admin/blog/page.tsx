@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Loader2, Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 interface BlogPost {
   id: string
@@ -19,9 +21,20 @@ export default function AdminBlogPage() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
     const fetchBlogPosts = async () => {
+      // Check if user is authenticated
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session) {
+        router.push("/admin/login")
+        return
+      }
+
       try {
         const response = await fetch("/api/blog/admin")
         const data = await response.json()

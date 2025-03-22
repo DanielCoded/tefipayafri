@@ -1,6 +1,9 @@
+"use client"
+
 import { createClient } from "@supabase/supabase-js"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Printer } from "lucide-react"
 
 export const revalidate = 0 // disable cache for this route
 
@@ -28,8 +31,8 @@ export default async function AdminWaitlistPage() {
           <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold">Waitlist Entries</h1>
-              <Link href="/" className="text-indigo-600 hover:text-indigo-800">
-                ← Back to home
+              <Link href="/admin/dashboard" className="text-indigo-600 hover:text-indigo-800">
+                ← Back to dashboard
               </Link>
             </div>
             <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded mb-4">
@@ -47,8 +50,8 @@ export default async function AdminWaitlistPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Waitlist Entries</h1>
-            <Link href="/" className="text-indigo-600 hover:text-indigo-800">
-              ← Back to home
+            <Link href="/admin/dashboard" className="text-indigo-600 hover:text-indigo-800">
+              ← Back to dashboard
             </Link>
           </div>
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
@@ -70,13 +73,26 @@ export default async function AdminWaitlistPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Waitlist Entries</h1>
-          <Link href="/" className="text-indigo-600 hover:text-indigo-800">
-            ← Back to home
-          </Link>
+          <div className="flex gap-4">
+            <Button
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.print()
+                }
+              }}
+              className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 print:hidden"
+            >
+              <Printer className="w-4 h-4" />
+              Print Waitlist
+            </Button>
+            <Link href="/admin/dashboard" className="text-indigo-600 hover:text-indigo-800 print:hidden">
+              ← Back to dashboard
+            </Link>
+          </div>
         </div>
 
         {waitlistEntries && waitlistEntries.length > 0 ? (
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg print:shadow-none">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -117,8 +133,8 @@ export default async function AdminWaitlistPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Waitlist Entries</h1>
-          <Link href="/" className="text-indigo-600 hover:text-indigo-800">
-            ← Back to home
+          <Link href="/admin/dashboard" className="text-indigo-600 hover:text-indigo-800">
+            ← Back to dashboard
           </Link>
         </div>
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
