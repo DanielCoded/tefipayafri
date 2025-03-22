@@ -6,6 +6,8 @@ import { motion } from "framer-motion"
 import { Smartphone, Shield, Zap, CreditCard, Globe, Clock, BarChart, Lock, Users } from "lucide-react"
 import { Button } from "@/components/button"
 import { BackgroundAnimation } from "@/components/background-animation"
+import { TeamSection } from "@/components/team-section"
+import { teamMembers } from "@/lib/team-data"
 
 const features = [
   {
@@ -173,6 +175,13 @@ export default function FeaturesPage() {
           </div>
         </section>
       ))}
+
+      {/* Team Section */}
+      <TeamSection
+        title="Meet the Team Behind TefiPay"
+        subtitle="Our leadership team is committed to building the future of contactless payments in Africa."
+        members={teamMembers}
+      />
 
       {/* Waitlist Section */}
       <section className="py-16 px-4 md:px-6 bg-gradient-to-b from-black/20 to-[#030303] relative z-10">

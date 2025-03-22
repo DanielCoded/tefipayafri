@@ -35,4 +35,3 @@ npm install
 # or
 yarn install
 
-"# tefipayafri" 

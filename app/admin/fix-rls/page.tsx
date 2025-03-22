@@ -1,60 +1,32 @@
 "use client"
 
 import { useState } from "react"
-import { supabase } from "@/lib/supabase"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 
 export default function FixRLSPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null)
+  const [result, setResult] = useState<{ success: boolean; message: string; sql?: string } | null>(null)
 
   const fixRLS = async () => {
     setIsLoading(true)
     setResult(null)
 
     try {
-      // Try to fix the RLS policies
-      const fixRLSQuery = `
-        -- Drop existing policies if they exist
-        DROP POLICY IF EXISTS "Allow public inserts to waitlist" ON public.waitlist;
-        DROP POLICY IF EXISTS "Allow authenticated to select from waitlist" ON public.waitlist;
-        DROP POLICY IF EXISTS "Allow anon to select from waitlist" ON public.waitlist;
-        
-        -- Create new policies with correct permissions
-        CREATE POLICY "Allow anyone to insert to waitlist" 
-          ON public.waitlist 
-          FOR INSERT 
-          TO anon, authenticated 
-          WITH CHECK (true);
-        
-        CREATE POLICY "Allow anyone to select from waitlist" 
-          ON public.waitlist 
-          FOR SELECT 
-          TO anon, authenticated 
-          USING (true);
-      `
+      const response = await fetch("/api/fix-rls")
+      const data = await response.json()
 
-      const { error } = await supabase.rpc("exec_sql", { query: fixRLSQuery })
-
-      if (error) {
-        console.error("Error fixing RLS:", error)
-        setResult({
-          success: false,
-          message: `Error fixing RLS: ${error.message}. Please run the SQL script manually.`,
-        })
-      } else {
-        setResult({
-          success: true,
-          message: "RLS policies have been fixed successfully!",
-        })
-      }
+      setResult({
+        success: data.success,
+        message: data.message,
+        sql: data.sql,
+      })
     } catch (error) {
       console.error("Error:", error)
       setResult({
         success: false,
-        message: `An unexpected error occurred. Please run the SQL script manually.`,
+        message: "An unexpected error occurred. Please run the SQL script manually.",
       })
     } finally {
       setIsLoading(false)
@@ -95,10 +67,19 @@ export default function FixRLSPage() {
             className={`p-4 rounded-md ${
               result.success
                 ? "bg-green-50 text-green-800 border border-green-200"
-                : "bg-red-50 text-red-800 border border-red-200"
+                : "bg-yellow-50 text-yellow-800 border border-yellow-200"
             }`}
           >
             <p>{result.message}</p>
+          </div>
+        )}
+
+        {result && result.sql && (
+          <div className="mt-4">
+            <h3 className="font-semibold mb-2">SQL to Run Manually:</h3>
+            <div className="bg-gray-50 p-4 rounded-md overflow-x-auto">
+              <pre className="text-sm text-gray-800">{result.sql}</pre>
+            </div>
           </div>
         )}
       </div>
@@ -115,7 +96,8 @@ export default function FixRLSPage() {
             {`-- Drop existing policies if they exist
 DROP POLICY IF EXISTS "Allow public inserts to waitlist" ON public.waitlist;
 DROP POLICY IF EXISTS "Allow authenticated to select from waitlist" ON public.waitlist;
-DROP POLICY IF EXISTS "Allow anon to select from waitlist" ON public.waitlist;
+DROP POLICY IF EXISTS "Allow anyone to insert to waitlist" ON public.waitlist;
+DROP POLICY IF EXISTS "Allow anyone to select from waitlist" ON public.waitlist;
 
 -- Create new policies with correct permissions
 CREATE POLICY "Allow anyone to insert to waitlist" 

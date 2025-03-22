@@ -51,6 +51,13 @@ export function MobileMenu() {
                 >
                   Features
                 </Link>
+                <Link
+                  href="/contact"
+                  className="text-white/80 hover:text-white transition-colors py-2 border-b border-white/10 pb-4"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Contact
+                </Link>
                 <Button
                   asChild
                   className="bg-gradient-to-r from-indigo-500 to-rose-500 text-white hover:from-indigo-600 hover:to-rose-600 mt-4"

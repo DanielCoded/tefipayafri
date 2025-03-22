@@ -1,15 +1,30 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
-// Create a Supabase client with the anon key for server-side operations
+// Create a Supabase client with the service role key for server-side operations
+// This bypasses RLS policies
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn("Missing Supabase environment variables")
+if (!supabaseUrl) {
+  console.warn("Missing Supabase URL environment variable")
 }
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Create a Supabase client
+let supabase
+
+if (supabaseServiceKey) {
+  // If we have a service role key, use it (bypasses RLS)
+  supabase = createClient(supabaseUrl, supabaseServiceKey)
+} else {
+  // Fallback to anon key if service key is not available
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+  if (!supabaseAnonKey) {
+    console.warn("Missing Supabase anon key environment variable")
+  }
+  supabase = createClient(supabaseUrl, supabaseAnonKey)
+  console.warn("Using anon key for Supabase client. This may cause RLS policy issues.")
+}
 
 export async function POST(request: Request) {
   try {

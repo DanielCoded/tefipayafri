@@ -3,7 +3,7 @@ import { Partners } from "@/components/partners"
 import { Features } from "@/components/features"
 import { Stats } from "@/components/stats"
 import { PhotoGrid } from "@/components/photo-grid"
-import { Testimonials } from "@/components/testimonials"
+import { FounderBlogs } from "@/components/founder-blogs"
 import { Footer } from "@/components/footer"
 import { Showcase } from "@/components/showcase"
 
@@ -16,7 +16,7 @@ export default function Home() {
       <Stats />
       <Showcase />
       <PhotoGrid />
-      <Testimonials />
+      <FounderBlogs />
       <Footer />
     </main>
   )

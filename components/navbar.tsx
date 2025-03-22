@@ -51,6 +51,12 @@ export function Navbar() {
             >
               Features
             </Link>
+            <Link
+              href="/contact"
+              className="text-white/80 hover:text-white transition-all duration-300 hover:translate-y-[-2px]"
+            >
+              Contact
+            </Link>
           </nav>
 
           <div className="hidden md:block">
